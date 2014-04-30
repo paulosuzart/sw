@@ -3,8 +3,7 @@
             [clojurewerkz.meltdown.stream-graph :as msg]
             [clojurewerkz.meltdown.reactor :as mr]
             [clojurewerkz.meltdown.selectors :refer [$ match-all]]
-            [clojure.core.reducers :as r])
-  (:gen-class))
+            [clojure.core.reducers :as r]))
 
 (defn ticker
   "Produces a default ticker that tickers timestamp every 1s"

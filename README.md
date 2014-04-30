@@ -1,10 +1,11 @@
 # sw
 
-A tiny lib with just a sliding-window [reactor](https://github.com/reactor) (if I can really name it like this) built on top of [meltdown](https://github.com/clojurewerkz/meltdown)
+A tiny lib with just a sliding-window [reactor](https://github.com/reactor) (if I can really name it like this) built on top of [meltdown](https://github.com/clojurewerkz/meltdown).
 
 ## Usage
 
-    ; Create an ordinary reactor to serve as the event input for the window
+    ; Create an ordinary reactor to serve as the event input for the window.
+    ; Suppose this reactor will handle ecommerce tickets.
     (def tickets (mr/create))
 
     ; Create the actuall window
@@ -14,12 +15,11 @@ A tiny lib with just a sliding-window [reactor](https://github.com/reactor) (if 
     (mr/notify tickets "shirt" 20)
 
     ; And register any handler as you would do with a reactor
-    ; Notice this handler is called on every tick beat, not on 
+    ; Notice this handler is called on every ticker beat, not on 
     ; every notification on tickets reactor
     (on-tick last-5-secs 
-        (fn [b]
-          (dosync
-          (println "Last 5 minutes we sold: " (apply + b)))))
+      (fn [b]
+        (println "Last 5 minutes we sold: " (apply + b))))
 
     (mr/notify tickets "water" 1.25)
     (mr/notify tickets ...)
