@@ -3,17 +3,20 @@
             [clojurewerkz.meltdown.stream-graph :as msg]
             [clojurewerkz.meltdown.reactor :as mr]
             [clojurewerkz.meltdown.selectors :refer [$ match-all]]
-            [clojure.core.reducers :as r]))
+            [clojure.core.reducers :as r])
+  (:import [java.util Timer TimerTask]))
 
 (defn ticker
   "Produces a default ticker that tickers timestamp every 1s"
   []
-  (let [ticker-reactor (mr/create :event-routing-strategy :broadcast)]
-    (future
-      (loop []
-        (mr/notify ticker-reactor "tick" {:time (System/currentTimeMillis)}))
-        (Thread/sleep 1000)
-        (recur))
+  (let [ticker-reactor (mr/create :event-routing-strategy :broadcast)
+        timer          (Timer. "sw-1s-ticker" true)
+        timer-task     (proxy [TimerTask] []
+                         (run []
+                           (mr/notify ticker-reactor
+                                      "tick"
+                                      {:time (System/currentTimeMillis)})))]
+    (.scheduleAtFixedRate timer timer-task 0 1)
     ticker-reactor))
 
 (defn buffer-cleaner 
